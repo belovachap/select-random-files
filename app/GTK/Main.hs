@@ -3,27 +3,37 @@ module Main (main) where
 import Lib
 
 import Graphics.UI.Gtk
-import Graphics.Rendering.Cairo
+
+fromJust :: Maybe a -> a
+fromJust (Just a) = a
+fromJust Nothing = error "Can't be Nothing!"
 
 main :: IO ()
 main = do
     initGUI
-    window      <- windowNew
-    drawingArea <- drawingAreaNew
-    containerAdd window drawingArea
-
-    drawingArea `onExpose` (\_ -> renderScene drawingArea)
+    
+    window <- windowNew
     window `onDestroy` mainQuit
 
-    windowSetDefaultSize window 640 480
+    vBox <- vBoxNew True 10
+
+    source <- fileChooserWidgetNew FileChooserActionSelectFolder
+    boxPackStart vBox source PackNatural 10
+
+    destination <- fileChooserWidgetNew FileChooserActionSelectFolder
+    boxPackStart vBox destination PackNatural 10
+
+    numFiles <- spinButtonNewWithRange 1 100 1 
+    boxPackStart vBox numFiles PackNatural 10
+
+    copy <- buttonNewWithLabel "Copy Random Files"
+    copy `onClicked` (do n <- spinButtonGetValueAsInt numFiles
+                         s <- fileChooserGetFilename source
+                         d <- fileChooserGetFilename destination
+                         copyRandomFiles n (fromJust s) ((fromJust d) ++ "/"))
+    boxPackStart vBox copy PackNatural 10
+    
+    containerAdd window vBox
     widgetShowAll window
+
     mainGUI
-
-renderScene :: DrawingArea -> IO Bool
-renderScene da = do
-    dw <- widgetGetDrawWindow da
-    renderWithDrawable dw $ do setSourceRGBA 0.5 0.5 0.5 1.0
-                               moveTo 100.0 100.0
-                               showText "HelloWorld"
-    return True
-

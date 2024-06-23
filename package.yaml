@@ -21,6 +21,11 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- directory
+- extra
+- filepath
+- random
+- random-shuffle
 
 ghc-options:
 - -Wall
@@ -45,11 +50,6 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - directory
-    - extra
-    - filepath
-    - random
-    - random-shuffle
     - select-random-files
 
   select-random-files-gtk:
@@ -60,7 +60,6 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - cairo
     - gtk
     - select-random-files
 
