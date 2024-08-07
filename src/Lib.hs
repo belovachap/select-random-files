@@ -9,7 +9,7 @@ import System.Random
 import System.Random.Shuffle
 
 copyRandomFiles :: Int -> FilePath -> FilePath -> IO ()
-copyRandomFiles numFiles source destination = do randomGenerator <- getStdGen
+copyRandomFiles numFiles source destination = do randomGenerator <- newStdGen
                                                  sourceFiles <- listFilesRecursive source
                                                  let copyFiles = take numFiles $ shuffle' sourceFiles (length sourceFiles) randomGenerator
                                                  mapM_ (\file -> copyFile file (destination ++ (takeFileName file) )) copyFiles
